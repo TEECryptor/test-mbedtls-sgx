@@ -1,0 +1,44 @@
+/* Enclave.edl - Top EDL file. */
+
+enclave {
+    from "sgx_tstdc.edl" import *;
+    from "sgx_pthread.edl" import *;
+    from "sgx_tprotected_fs.edl" import *;
+    from "mbedtls_SGX.edl" import *;
+    include "sgx_report.h"
+    include "stdio.h"
+
+    trusted {
+
+        /**
+         *  To run a TEE task in enclave
+         */
+        public int ecall_run(uint32_t type,
+                             [in, size=data_len]const char* input_data,
+                             uint64_t data_len,
+                             [out] char **output, 
+                             [out] uint64_t *output_len);
+
+    };
+
+    untrusted {
+        /*
+        *  print string in consle
+        */
+        void ocall_printf( [string, in] const char* str );
+
+        /*
+        *  output a log string in consle
+        */
+        void ocall_nlog( uint32_t level, [string, in] const char* msg );
+
+        /* malloc memory outside the enclave
+         *
+         * parameters:
+         *      size[in] - size of the memory
+         *      pptr[in] - the pointer(inside enclave) to pointer(outside enclave) which points to memory outside the enclave .
+         */
+        void ocall_malloc( size_t size, [out] uint8_t **pptr_outside_enclave );
+    };
+
+};
