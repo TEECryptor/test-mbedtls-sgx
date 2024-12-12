@@ -16,7 +16,25 @@ void ocall_printf(const char* str)
 
 void ocall_nlog( uint32_t level, const char* msg )
 {
-
+    switch (level) {
+        case 0:
+        printf("DEBUG: %s\n",msg);
+        break;
+        case 1:
+        printf("INFO: %s\n",msg);
+        break;
+        case 2:
+        printf("WARN: %s\n",msg);
+        break;
+        case 3:
+        printf("ERROR: %s\n",msg);
+        break;
+        case 4:
+        printf("FATAL: %s\n",msg);
+        case 5:
+        printf("LOG: %s\n",msg);
+        break;
+    }
 }
 
 void ocall_malloc( size_t size, uint8_t** ret )

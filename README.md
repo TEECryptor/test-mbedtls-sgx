@@ -20,6 +20,7 @@ sudo cp -r mbedtls_SGX-2.6.0 /opt/.
 
 ## Build test-mbedtls-sgx
 
+- Hardware mode
 ```
 cd test-mbedtls-sgx
 mkdir build && cd build
@@ -27,4 +28,15 @@ cmake ..
 make
 ```
 
+- Simulation mode
+```
+cd test-mbedtls-sgx
+mkdir build && cd build
+cmake .. -DUSE_SIM_MODE=on
+make
+```
+
 ## Run
+```
+./App/test-mbedtls_SGX ./Enclave/enclave.signed.so
+```

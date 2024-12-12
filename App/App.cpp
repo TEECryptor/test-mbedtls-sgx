@@ -7,6 +7,7 @@
 #include <thread>
 #include <list>
 #include <nlohmann/json.hpp>
+#include "test_data.h"
 
 sgx_enclave_id_t global_eid = 0;
 
@@ -18,7 +19,7 @@ void printHex(const uint8_t* data, size_t size)
     printf("\n");
 }
 
-int test_https_get(const std::string &url, const std::string &ca_certs, const std::list<std::string> &headers, std::string &reponse) 
+int do_https_get(const std::string &url, const std::string &ca_certs, const std::list<std::string> &headers, std::string &reponse) 
 {
     int ret = 0;
     sgx_status_t sgx_status;
@@ -60,13 +61,46 @@ _exit:
     return ret;
 }
 
-int test_https_post(const std::string &url, const std::string &ca_certs, const std::list<std::string> &headers, const std::string &body, std::string &reponse) 
+int do_https_post(const std::string &url, const std::string &ca_certs, const std::list<std::string> &headers, const std::string &body, std::string &reponse) 
 {
     int ret = 0;
     sgx_status_t sgx_status;
 
     return ret;
 }
+
+void test_world_time_url()
+{
+    int ret = 0;
+    std::list<std::string> headers;
+    std::string response;
+
+    printf("\nTest world time url: %s\n", world_time_url);
+
+    if ((ret = do_https_get(world_time_url, world_time_ca_certs, headers, response)) != 0) {
+        printf("--->ERROR: do_https_get() failed! ret: %d\n", ret);
+    }
+
+    printf("Reponse: %s\n", response.c_str());
+}
+
+void test_binance_api()
+{
+    int ret = 0;
+    std::list<std::string> headers;
+    std::string response;
+
+    printf("\nTest binance api url: %s\n", binance_url);
+
+	headers.push_back("X-MBX-APIKEY: 0HU6mrraPEEayWmGq1OWK7B5zVNNXbuoracMkFNDosDtTT2JJ44Rob1JxeOXSpBb");
+
+    if ((ret = do_https_get(binance_url, binance_ca_certs, headers, response)) != 0) {
+        printf("--->ERROR: do_https_get() failed! ret: %d\n", ret);
+    }
+
+    printf("Reponse: %s\n", response.c_str());
+}
+
 
 int SGX_CDECL main(int argc, char *argv[])
 {
@@ -84,9 +118,11 @@ int SGX_CDECL main(int argc, char *argv[])
 
     printf( "\nStart to test...\n");
 
-    // TODO
+    test_world_time_url();
 
-    printf( "Test successfully!\n" );
+    test_binance_api();
+
+    printf( "\nTest finished!\n\n" );
 
 _exit:
     sgx_destroy_enclave( global_eid );
